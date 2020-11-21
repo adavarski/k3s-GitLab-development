@@ -4,6 +4,7 @@
 This document outlines the steps for utilizing [k3s] to manage a self-hosted [Gitlab] instance. This may be beneficial for individuals and organizations already leveraging [Kubernetes] for platform development. Many applications such as [Gitlab] do not need sophisticated compute clusters to operate, yet [k3s] allows us to achieve additional continuity in the management of development operations. [k3s], although slim-down, is a fully functional [Kubernetes]. 
 
 ![k3s gitlab diagram]
+
 <img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/devops-toolchain-cicd.png?raw=true" width="650">)
 
 Containers have made applications like [Gitlab] incredibly portable, [Kubernetes] brings that portability to container management and [k3s] makes that portability available at the smallest of scale.

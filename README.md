@@ -5,7 +5,7 @@ This document outlines the steps for utilizing [k3s](https://k3s.io/) to manage 
 
 [k3s gitlab diagram]
 
-<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/devops-toolchain-cicd.png?raw=true" width="750">
+<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/devops-toolchain-cicd.png?raw=true" width="800">
 
 Containers have made applications like Gitlab incredibly portable, Kubernetes brings that portability to container management and [k3s] makes that portability available at the smallest of scale.
 

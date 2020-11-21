@@ -990,13 +990,12 @@ building custom containers with GitLab CI for example).
 Installation may take several minutes.
 
 ### REF
-
+```
 [Pod]: https://kubernetes.io/docs/concepts/workloads/pods/pod/
 [Deployment]: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
 [Ingress]: https://kubernetes.io/docs/concepts/services-networking/ingress/
 [Namespace]: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
 [Service]: https://kubernetes.io/docs/concepts/services-networking/service/
-[Services]: https://kubernetes.io/docs/concepts/services-networking/service/
 [Let's Encrypt]: https://letsencrypt.org/
 [ClusterIssuer]: https://docs.cert-manager.io/en/latest/tasks/issuers/
 [Traefik]:https://traefik.io/
@@ -1007,7 +1006,7 @@ Installation may take several minutes.
 [Digital Ocean]: https://m.do.co/c/97b733e7eba4
 [Linode]: https://www.linode.com/?r=848a6b0b21dc8edd33124f05ec8f99207ccddfde
 [Kubernetes]: https://kubernetes.io/
-[Ubuntu 18.04]: http://releases.ubuntu.com/18.04/
+```
 
 
 

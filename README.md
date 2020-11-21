@@ -231,7 +231,7 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 ```
 
 
-### Fix k3s CoreDns for local
+### Fix k3s CoreDNS for local development
 
 ```
 $ cd k8s/utils/
@@ -273,9 +273,79 @@ Details bellow:
 kubectl apply -f ./k8s/1000-gitlab/00-namespace.yml
 ```
 
-### Certificates
+## Install [Cert Manager] / [Let's Encrypt]
 
-[./k8s/1000-gitlab/05-certs.yml](./k8s/1000-gitlab/05-certs.yml) creates the [Certificates] `gitlab`:
+[Gitlab] ships with [Let's Encrypt] capabilities, however, since we are running Gitlab through [k3s] (Kubernetes) [Ingress] (using [Traefik],) we need to generate Certs and provide TLS from the cluster. 
+
+Create Cert Manager's Custom Resource Definitions: 
+```bash
+kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.8/deploy/manifests/00-crds.yaml
+```
+
+Install [Cert Manager] with the [./k8s/0000-global/001-cert-manager-helm.yml](./k8s/0000-global/001-cert-manager-helm.yml) manifest (the [k3s] way):
+
+```bash
+kubectl create -f ./k8s/0000-global/001-cert-manager-helm.yml 
+```
+
+Ensure that cert manager is now running:
+```bash
+kubectl get all -n cert-manager
+```
+
+Output:
+```plain
+$ kubectl get all -n cert-manager
+NAME                                           READY   STATUS    RESTARTS   AGE
+pod/cert-manager-6d87886d5c-2q4rl              1/1     Running   2          31h
+pod/cert-manager-webhook-6846f844ff-b4xjf      1/1     Running   1          31h
+pod/cert-manager-cainjector-55db655cd8-xmrj4   1/1     Running   0          13s
+
+NAME                           TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+service/cert-manager-webhook   ClusterIP   10.43.118.224   <none>        443/TCP    31h
+service/cert-manager           ClusterIP   10.43.133.245   <none>        9402/TCP   31h
+
+NAME                                      READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/cert-manager              1/1     1            1           31h
+deployment.apps/cert-manager-webhook      1/1     1            1           31h
+deployment.apps/cert-manager-cainjector   1/1     1            1           31h
+
+NAME                                                 DESIRED   CURRENT   READY   AGE
+replicaset.apps/cert-manager-6d87886d5c              1         1         1       31h
+replicaset.apps/cert-manager-webhook-6846f844ff      1         1         1       31h
+replicaset.apps/cert-manager-cainjector-55db655cd8   1         1         1       31h
+
+```
+
+
+Add a [ClusterIssuer] to handle the generation of Certs cluster-wide:
+
+***NOTE:** First edit [./k8s/0000-global/005-clusterissuer.yml](./k8s/0000-global/005-clusterissuer.yml) and replace **YOUR_EMAIL_ADDRESS** with your email address.
+
+```bash
+kubectl apply -f ./k8s/0000-global/005-clusterissuer.yml 
+```
+## Install Gitlab
+
+### QUICK INSTALLATION: kubectl create -f 00-namespace.yml ; kubectl create -f 05-certs.yml; kubectl create -f 10-services.yml ; kubectl create -f 20-configmap.yml; kubectl create -f 40-deployment.yml ; kubectl create -f 50-ingress.yml
+
+### QUICK CLEANING: kubectl delete -f 50-ingress.yml; kubectl delete -f 40-deployment.yml; kubectl delete -f 20-configmap.yml; kubectl delete -f 10-services.yml; kubectl delete -f 05-certs.yml; kubectl delete -f 00-namespace.yml; sudo rm -rf /srv
+
+Details bellow:
+
+
+
+### Namespace
+
+[./k8s/1000-gitlab/00-namespace.yml](./k8s/1000-gitlab/00-namespace.yml) creates the [Namespace] `gitlab`:
+
+```bash
+kubectl apply -f ./k8s/1000-gitlab/00-namespace.yml
+```
+
+### TLS Certificate
+
+Generate a TLS Certificate (first edit [./k8s/1000-gitlab/05-certs.yml](./k8s/1000-gitlab/05-certs.yml) and replace **gitlab.dev.davar.com** with your domain):
 
 ```bash
 kubectl apply -f ./k8s/1000-gitlab/05-certs.yml
@@ -681,10 +751,10 @@ kubectl apply -f ./k8s/1000-gitlab/00-namespace.yml
 
 ### TLS Certificate
 
-Generate a TLS Certificate (first edit [./k8s/1000-gitlab/010-certs.yml](./k8s/1000-gitlab/010-certs.yml) and replace **gitlab.dev** with your domain):
+Generate a TLS Certificate (first edit [./k8s/1000-gitlab/05-certs.yml](./k8s/1000-gitlab/05-certs.yml) and replace **gitlab.dev** with your domain):
 
 ```bash
-kubectl apply -f ./k8s/1000-gitlab/010-certs.yml
+kubectl apply -f ./k8s/1000-gitlab/05-certs.yml
 ```
 
 ### Services
@@ -695,13 +765,17 @@ kubectl apply -f ./k8s/1000-gitlab/010-certs.yml
 kubectl apply -f ./k8s/1000-gitlab/10-service.yml
 ```
 
-### Deployment
-[./k8s/1000-gitlab/20-configmap.yml.PRODUCTION](./k8s/1000-gitlab/20-configmap.yml.PRODUCTION) creates a Gitlab **[ConfigMap]**.
-
-[./k8s/1000-gitlab/40-deployment.yml](./k8s/1000-gitlab/40-deployment.yml) creates a Gitlab **[Deployment]**.
+### ConfigMap
+[./k8s/1000-gitlab/20-configmap.yml](./k8s/1000-gitlab/20-configmap.yml) creates a Gitlab **[ConfigMap]**.
 
 ```bash
-kubectl apply -f ./k8s/1000-gitlab/20-configmap.yml.PRODUCTION
+kubectl apply -f ./k8s/1000-gitlab/20-configmap.yml
+```
+
+### Deployment
+[./k8s/1000-gitlab/40-deployment.yml](./k8s/1000-gitlab/40-deployment.yml) creates a Gitlab **[Deployment]**.
+
+```
 kubectl apply -f ./k8s/1000-gitlab/40-deployment.yml
 ```
 

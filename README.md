@@ -499,7 +499,7 @@ $ kubectl get certificate -n gitlab
 NAME           READY   SECRET             AGE
 gitlab-davar           gitlab-davar-tls   84m
 
-
+$ kubectl describe certificate -n gitlab gitlab-davar
 ```
 
 

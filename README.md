@@ -1,7 +1,7 @@
 # k3s + Gitlab (Developing for Kubernetes with k3s+GitLab)
 
 
-This document outlines the steps for utilizing [k3s](https://k3s.io/) to manage a self-hosted [Gitlab](https://gitlab.com/) instance. This may be beneficial for individuals and organizations already leveraging [Kubernetes] (https://kubernetes.io/) for platform development. Many applications such as Gitlab do not need sophisticated compute clusters to operate, yet k3s allows us to achieve additional continuity in the management of development operations. k3s, although slim-down, is a fully functional Kubernetes. 
+This document outlines the steps for utilizing [k3s](https://k3s.io/) to manage a self-hosted [Gitlab](https://gitlab.com/) instance. This may be beneficial for individuals and organizations already leveraging [Kubernetes](https://kubernetes.io/) for platform development. Many applications such as Gitlab do not need sophisticated compute clusters to operate, yet k3s allows us to achieve additional continuity in the management of development operations. k3s, although slim-down, is a fully functional Kubernetes. 
 
 [k3s gitlab diagram]
 
@@ -184,7 +184,9 @@ cat /etc/rancher/k3s/k3s.yaml
 The `k3s.yaml` is a Kubernetes config file used by `kubectl` and contains (1) one cluster, (3) one user and a (2) context that ties them together. `kubectl` uses [contexts] to determine the cluster you wish to connect to and use for access credentials. The `current-context` section is the name of the context currently selected with the `kubectl config use-context` command.
 
 
-![k3s.yml](<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/k3s-yaml.jpg?raw=true" width="650")
+![k3s.yml]
+
+<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/k3s-yaml.jpg?raw=true" width="650"
 
 Ensure that [kubectl] is installed on your local workstation.
 
@@ -196,7 +198,9 @@ If you already have clusters, user and contexts in your `~/.kube/config` you can
 
 Another option is to create another file such as `~/.kube/gitlab-config` and set the **KUBECONFIG** environment variable to point to it. Read more about `kubectl` [configuration options][contexts].
 
-![kubectl config](<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/kubectl-config.jpg?raw=true" width="650")
+[kubectl config]
+
+<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/kubectl-config.jpg?raw=true" width="650"
 
 Before you being configuring [k3s] make sure `kubectl` pointed to the correct cluster: 
 
@@ -626,7 +630,9 @@ cat /etc/rancher/k3s/k3s.yaml
 The `k3s.yaml` is a Kubernetes config file used by `kubectl` and contains (1) one cluster, (3) one user and a (2) context that ties them together. `kubectl` uses [contexts] to determine the cluster you wish to connect to and use for access credentials. The `current-context` section is the name of the context currently selected with the `kubectl config use-context` command.
 
 
-![k3s.yml](<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/k3s-yaml.jpg?raw=true" width="650")
+[k3s.yml]
+
+<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/k3s-yaml.jpg?raw=true" width="650"
 
 Ensure that [kubectl] is installed on your local workstation.
 
@@ -638,7 +644,9 @@ If you already have clusters, user and contexts in your `~/.kube/config` you can
 
 Another option is to create another file such as `~/.kube/gitlab-config` and set the **KUBECONFIG** environment variable to point to it. Read more about `kubectl` [configuration options][contexts].
 
-![kubectl config](<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/kubectl-config.jpg?raw=true" width="650")
+[kubectl config]
+
+<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/kubectl-config.jpg?raw=true" width="650"
 
 Before you being configuring [k3s] make sure `kubectl` pointed to the correct cluster: 
 
@@ -847,7 +855,9 @@ GitLab allows individual projects or groups to each have individually
 integrated Kubernetes clusters.
 Setting up a new GitLab group and integrates it with the existing k8s cluster.
 
-![ Create GitLab group](<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/k3s-gitlab-create-group.png?raw=true" width="650")
+[ Create GitLab group]
+
+(<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/k3s-gitlab-create-group.png?raw=true" width="650"
  
 
 ### Configure Kubernetes Cluster Integration
@@ -944,7 +954,9 @@ token:      eyJhbGciOiJSUzI1NiIsImtpZCI6Ik9odGhfSHRzQ1NiM1ZQSVRQZlQ2NUJQRDFVN2FM
 ```
 
 8. Ensure that RBAC is enabled.
-![GitLab group Kubernetes configuration menu](<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/k3s-gitlab-add-existing-cluster.png?raw=true" width="650")
+[GitLab group Kubernetes configuration menu]
+
+<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/k3s-gitlab-add-existing-cluster.png?raw=true" width="650"
  
 
 Note: If you want to add k8s k3s-based cluster where gitlab is running because of error "https://dev-k3s.davar.com:6443

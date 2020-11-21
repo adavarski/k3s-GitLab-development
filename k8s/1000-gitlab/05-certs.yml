@@ -1,0 +1,21 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: gitlab-davar
+  namespace: gitlab
+spec:
+  secretName: gitlab-davar-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: gitlab.dev.davar.com
+  dnsNames:
+    - gitlab.dev.davar.com
+    - reg.gitlab.dev.davar.com
+  acme:
+    config:
+      - http01:
+          ingressClass: traefik
+        domains:
+          - gitlab.dev.davar.com
+          - reg.gitlab.dev.davar.com

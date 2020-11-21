@@ -1,0 +1,13 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: gitlab-ui
+  namespace: gitlab
+  labels:
+    app: gitlab
+  annotations:
+    traefik.ingress.kubernetes.io/redirect-entry-point: https
+spec:
+  backend:
+    serviceName: gitlab
+    servicePort: 80

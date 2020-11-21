@@ -5,7 +5,7 @@ This document outlines the steps for utilizing [k3s](https://k3s.io/) to manage 
 
 [k3s gitlab diagram]
 
-<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/devops-toolchain-cicd.png?raw=true" width="650">)
+<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/devops-toolchain-cicd.png?raw=true" width="750">)
 
 Containers have made applications like Gitlab incredibly portable, Kubernetes brings that portability to container management and [k3s] makes that portability available at the smallest of scale.
 
@@ -957,7 +957,7 @@ token:      eyJhbGciOiJSUzI1NiIsImtpZCI6Ik9odGhfSHRzQ1NiM1ZQSVRQZlQ2NUJQRDFVN2FM
 
 [GitLab group Kubernetes configuration menu]
 
-<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/k3s-gitlab-add-existing-cluster.png?raw=true" width="650">
+<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/k3s-gitlab-add-existing-cluster.png?raw=true" width="750">
  
 
 Note: If you want to add k8s k3s-based cluster where gitlab is running because of error "https://dev-k3s.davar.com:6443
@@ -990,7 +990,7 @@ building custom containers with GitLab CI for example).
 Installation may take several minutes.
 
 REF:
-```
+
 [Pod]: https://kubernetes.io/docs/concepts/workloads/pods/pod/
 [Deployment]: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
 [Ingress]: https://kubernetes.io/docs/concepts/services-networking/ingress/
@@ -1008,6 +1008,6 @@ REF:
 [Linode]: https://www.linode.com/?r=848a6b0b21dc8edd33124f05ec8f99207ccddfde
 [Kubernetes]: https://kubernetes.io/
 [Ubuntu 18.04]: http://releases.ubuntu.com/18.04/
-```
+
 
 

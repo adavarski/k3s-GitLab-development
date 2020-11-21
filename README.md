@@ -989,7 +989,7 @@ check GitLab documentation for the version installed.
 building custom containers with GitLab CI for example). 
 Installation may take several minutes.
 
-REF:
+### REF
 
 [Pod]: https://kubernetes.io/docs/concepts/workloads/pods/pod/
 [Deployment]: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/

@@ -254,23 +254,6 @@ clusterrolebinding.rbac.authorization.k8s.io/system:coredns unchanged
 configmap/coredns unchanged
 deployment.apps/coredns configured
 service/kube-dns unchanged
-
-
-
-### QUICK INSTALLATION: kubectl create -f 00-namespace.yml ; kubectl create -f 05-certs.yml; kubectl create -f 10-services.yml ; kubectl create -f 20-configmap.yml; kubectl create -f 40-deployment.yml ; kubectl create -f 50-ingress.yml
-
-### QUICK CLEANING: kubectl delete -f 50-ingress.yml; kubectl delete -f 40-deployment.yml; kubectl delete -f 20-configmap.yml; kubectl delete -f 10-services.yml; kubectl delete -f 05-certs.yml; kubectl delete -f 00-namespace.yml; sudo rm -rf /srv
-
-Details bellow:
-
-## Install Gitlab
-
-### Namespace
-
-[./k8s/1000-gitlab/00-namespace.yml](./k8s/1000-gitlab/00-namespace.yml) creates the [Namespace] `gitlab`:
-
-```bash
-kubectl apply -f ./k8s/1000-gitlab/00-namespace.yml
 ```
 
 ## Install [Cert Manager] / [Let's Encrypt]
@@ -332,8 +315,6 @@ kubectl apply -f ./k8s/0000-global/005-clusterissuer.yml
 ### QUICK CLEANING: kubectl delete -f 50-ingress.yml; kubectl delete -f 40-deployment.yml; kubectl delete -f 20-configmap.yml; kubectl delete -f 10-services.yml; kubectl delete -f 05-certs.yml; kubectl delete -f 00-namespace.yml; sudo rm -rf /srv
 
 Details bellow:
-
-
 
 ### Namespace
 

@@ -186,7 +186,7 @@ The `k3s.yaml` is a Kubernetes config file used by `kubectl` and contains (1) on
 
 ![k3s.yml]
 
-<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/k3s-yaml.jpg?raw=true" width="650"
+<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/k3s-yaml.jpg?raw=true" width="550">
 
 Ensure that [kubectl] is installed on your local workstation.
 
@@ -200,7 +200,7 @@ Another option is to create another file such as `~/.kube/gitlab-config` and set
 
 [kubectl config]
 
-<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/kubectl-config.jpg?raw=true" width="650"
+<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/kubectl-config.jpg?raw=true" width="550">
 
 Before you being configuring [k3s] make sure `kubectl` pointed to the correct cluster: 
 
@@ -632,7 +632,7 @@ The `k3s.yaml` is a Kubernetes config file used by `kubectl` and contains (1) on
 
 [k3s.yml]
 
-<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/k3s-yaml.jpg?raw=true" width="650"
+<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/k3s-yaml.jpg?raw=true" width="550">
 
 Ensure that [kubectl] is installed on your local workstation.
 
@@ -646,7 +646,7 @@ Another option is to create another file such as `~/.kube/gitlab-config` and set
 
 [kubectl config]
 
-<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/kubectl-config.jpg?raw=true" width="650"
+<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/kubectl-config.jpg?raw=true" width="550">
 
 Before you being configuring [k3s] make sure `kubectl` pointed to the correct cluster: 
 
@@ -857,7 +857,7 @@ Setting up a new GitLab group and integrates it with the existing k8s cluster.
 
 [ Create GitLab group]
 
-(<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/k3s-gitlab-create-group.png?raw=true" width="650"
+<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/k3s-gitlab-create-group.png?raw=true" width="550">
  
 
 ### Configure Kubernetes Cluster Integration
@@ -954,9 +954,10 @@ token:      eyJhbGciOiJSUzI1NiIsImtpZCI6Ik9odGhfSHRzQ1NiM1ZQSVRQZlQ2NUJQRDFVN2FM
 ```
 
 8. Ensure that RBAC is enabled.
+
 [GitLab group Kubernetes configuration menu]
 
-<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/k3s-gitlab-add-existing-cluster.png?raw=true" width="650"
+<img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/k3s-gitlab-add-existing-cluster.png?raw=true" width="650">
  
 
 Note: If you want to add k8s k3s-based cluster where gitlab is running because of error "https://dev-k3s.davar.com:6443

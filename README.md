@@ -7,11 +7,11 @@ This document outlines the steps for utilizing [k3s](https://k3s.io/) to manage 
 
 <img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/devops-toolchain-cicd.png?raw=true" width="650">)
 
-Containers have made applications like [Gitlab] incredibly portable, [Kubernetes] brings that portability to container management and [k3s] makes that portability available at the smallest of scale.
+Containers have made applications like Gitlab incredibly portable, Kubernetes brings that portability to container management and [k3s] makes that portability available at the smallest of scale.
 
-This document outlines a process for setting up a Gitlab instance in a single custom node Kubernetes ([k3s]) cluster on [localhost] for local development or on VM [Digital Ocean], [Linode], [Google GCP], [Amazon AWS], [Microsoft Azure], etc. (*.yaml.PRODUCTION)
+This document outlines a process for setting up a Gitlab instance in a single custom node Kubernetes (k3s) cluster on [localhost] for local development or on VM [Digital Ocean], [Linode], [Google GCP], [Amazon AWS], [Microsoft Azure], etc.
 
-[Kubernetes] is a Cloud Native and Vendor Neutral solution, and if implemented well, the specific vendor should only be a high-level business concern.
+Kubernetes is a Cloud Native and Vendor Neutral solution, and if implemented well, the specific vendor should only be a high-level business concern.
 
 
 # k3s+GitLab for LOCAL development 
@@ -33,8 +33,8 @@ k3s to host GitLab is great way to become familiar with single-Node
 Clusters and with the added benefit of a management plane unified under
 the Kubernetes API.
 
-Of the two 9k3s & minikube), k3s tends to be the most viable. [It is closer to a production style
-deployment]. To deploy GitLab via k3s, the steps you should follow are:
+Of the two 9k3s & minikube), k3s tends to be the most viable. It is closer to a production style
+deployment. To deploy GitLab via k3s, the steps you should follow are:
 
 
 ## Prerequisite: DNS 
@@ -142,7 +142,7 @@ Address: 192.168.0.101
 
 ```
 
-## Install [k3s]
+## Install k3s
 
 [k3s] is "Easy to install. A binary of less than 40 MB. Only 512 MB of RAM required to run." this allows us to utilized Kubernetes for managing the Gitlab application container on a single node while limited the footprint of Kubernetes itself. 
 

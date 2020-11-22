@@ -140,6 +140,14 @@ Address:	192.168.0.101#53
 Name:	gitlab.dev.davar.com
 Address: 192.168.0.101
 
+$ sudo apt install resolvconf
+$ cat /etc/resolvconf/resolv.conf.d/head|grep nameserver
+# run "systemd-resolve --status" to see details about the actual nameservers.
+nameserver 192.168.0.101
+$ sudo systemctl start resolvconf.service
+$ sudo systemctl enable resolvconf.service
+
+
 ```
 
 ## Install k3s

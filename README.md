@@ -1040,7 +1040,7 @@ https://docs.gitlab.com/ee/administration/troubleshooting/kubernetes_cheat_sheet
 https://docs.gitlab.com/charts/development/minikube/index.html
 
 
-### REF
+### References
 ```
 [Pod]: https://kubernetes.io/docs/concepts/workloads/pods/pod/
 [Deployment]: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/

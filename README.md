@@ -1000,7 +1000,9 @@ data:
 If you use the above, remember to replace the values under `addresses` to match
 the IP range your metallb setup is going to use.
 
-#### Note2: GitLab can be integrated (Add existing k8s cluster) with kubernetes versions < v1.18, because GitLab supports (october.2020) the following Kubernetes versions (check suported versions: https://docs.gitlab.com/ee/user/project/clusters/), and you can upgrade your Kubernetes version to any supported version at any time:
+#### Note2: GitLab can be integrated (Add existing k8s cluster) with kubernetes versions < v1.18
+
+GitLab supports (october.2020) the following Kubernetes versions (check suported versions: https://docs.gitlab.com/ee/user/project/clusters/), and you can upgrade your Kubernetes version to any supported version at any time:
 ```
 1.17
 1.16
@@ -1031,6 +1033,8 @@ Error: error installing: the server could not find the requested resource
 ```
 
 #### Note3: You can install GitLab HELM chart on minikube DEV environment (minikube+gitlab for k8s development):
+
+Howtos:
 
 https://docs.gitlab.com/ee/administration/troubleshooting/kubernetes_cheat_sheet.html
 https://docs.gitlab.com/charts/development/minikube/index.html

@@ -991,13 +991,13 @@ If you use the above, remember to replace the values under `addresses` to match
 the IP range your metallb setup is going to use.
 
 #### Note2: GitLab can be integrated (Add existing k8s cluster) with kubernetes versions < v1.18, because GitLab supports (october.2020) the following Kubernetes versions (check suported versions: https://docs.gitlab.com/ee/user/project/clusters/), and you can upgrade your Kubernetes version to any supported version at any time:
-
+```
 1.17
 1.16
 1.15
 1.14 (deprecated, support ends on December 22, 2020)
 1.13 (deprecated, support ends on November 22, 2020)
-
+```
 The helm tiller can't be installed in kubernetes v1.18.+ because is not supported Gitlab versions (helm tiller install issue, and helm is needed for all the other GitLab sub apps depend on Helm Tiller: you cannot use cert manager, ingress, etc.) :
 
 ```

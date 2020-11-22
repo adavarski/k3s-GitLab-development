@@ -914,10 +914,12 @@ token:      eyJhbGciOiJSUzI1NiIsImtpZCI6Ik9odGhfSHRzQ1NiM1ZQSVRQZlQ2NUJQRDFVN2FM
 Note: If you want to add k8s k3s-based cluster where gitlab is running because of error "https://dev-k3s.davar.com:6443
 is blocked: Requests to the local network are not allowed": 
 
+```
 Log in to gitlab with the admin account,
 Click "settings" -> "network" -> "Outbound requests"
 Check the box labeled "Allow requests to the local network from web hooks and services"
 Click "Save changes"
+```
 
 
 ### Enable Dependencies

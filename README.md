@@ -1032,7 +1032,7 @@ $HELM_HOME has been configured at /root/.helm.
 Error: error installing: the server could not find the requested resource
 ```
 
-Example: Integrate gitlab (k3s) with k8s (minikube running locally on your laptop):
+#### Example: Integrate gitlab+k3s with existing k8s cluster (minikube k8s cluster running locally on your laptop):
 
 ```
 # Install minikube and kubectl the same k8s minor version : v1.16.2 (Note: some GitLab supported k8s version) 
@@ -1104,9 +1104,9 @@ namespace:  11 bytes
 token:      eyJhbGciOiJSUzI1NiIsImtpZCI6IjdySjlnOE85RmJMN1JXV0VVa1ZzbmdMYWYxQlM4NVZRS2J5Y3l5RDJ1Rm8ifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJnaXRsYWItdG9rZW4tdzluOWIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZ2l0bGFiIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiZDAwNmJmMjEtNGY1YS00OTMxLTgwZTktNDVjOWFhZDczYTA3Iiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmUtc3lzdGVtOmdpdGxhYiJ9.HRCpdHUY0rAfU1fOebj1VZk8IWcyO9XIVOYOcwgXmL2L3-oKFP-al7OKv8WGTBSSkXF3fVg6av2O627t-Qx7olTl1fAeDBvdvKQQG9LgPDMELLQ4sSAi9tw_kcu3BQDz9OHgTs58RmxkWhtxGtUzgP37IpN2KfaoMEgoqpOIre94ssEAvOeNupZ2T2STaHFILg2FBiOq8meQyAsu9pU76-Tuny9jye2uYoAWDVFG5GvDCkAQnK6jm1uhnI3Go9E-2MT_DYGpWhfaweQ9TNS6B4aVguEB-FbTzfYwkJDWwFGuO-UWV24SOGGBtOmLIbVAeWIz04qNExqHZZbu5OLthQ
 ca.crt:     1066 bytes
 
-### Open https://gitlab.dev.davar.com/ and create k8s-development group for example, and integrate group k8s minikube cluster providing above: API URL (https://192.168.99.102:8443), CA Certificate and Service Token. Install Helm, GitLab Runner, etc.
-
-
+### Open https://gitlab.dev.davar.com/ and create k8s-development group for example, 
+and integrate group k8s minikube cluster providing above: API URL (https://192.168.99.102:8443), CA Certificate and Service Token. 
+Install Helm, GitLab Runner, etc.
 
 ```
 

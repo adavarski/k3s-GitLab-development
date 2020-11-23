@@ -1032,6 +1032,84 @@ $HELM_HOME has been configured at /root/.helm.
 Error: error installing: the server could not find the requested resource
 ```
 
+Example: Integrate gitlab (k3s) with k8s (minikube running locally on your laptop):
+
+```
+# Install minikube and kubectl the same k8s minor version : v1.16.2 (Note: some GitLab supported k8s version) 
+$ curl -Lo minikube https://github.com/kubernetes/minikube/releases/download/v1.5.2/minikube-linux-amd64 && chmod +x minikube && sudo mv ./minikube /usr/local/bin/
+$ curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.16.2/bin/linux/amd64/kubectl && chmod +x ./kubectl && sudo mv ./kubectl /usr/local/bin/kubectl-minikube
+
+# Run minikube and wait 
+$ minikube start --cpus 2 --memory 4096
+$ cd k8s/utils
+$ cat gitlab-admin-service-account.yaml 
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gitlab
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: gitlab-admin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: gitlab
+    namespace: kube-system
+    
+$ kubectl-minikube create -f gitlab-admin-service-account.yaml 
+serviceaccount/gitlab created
+clusterrolebinding.rbac.authorization.k8s.io/gitlab-admin created   
+
+$ kubectl-minikube cluster-info | grep 'Kubernetes master' | awk '/http/ {print $NF}'
+https://192.168.99.102:8443
+
+$ kubectl-minikube get secret $(kubectl-minikube get secret | grep default-token | awk '{print $1}') -o jsonpath="{['data']['ca\.crt']}" | base64 --decode
+-----BEGIN CERTIFICATE-----
+MIIC5zCCAc+gAwIBAgIBATANBgkqhkiG9w0BAQsFADAVMRMwEQYDVQQDEwptaW5p
+a3ViZUNBMB4XDTIwMTExNjIzMTQ0MFoXDTMwMTExNTIzMTQ0MFowFTETMBEGA1UE
+AxMKbWluaWt1YmVDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOjO
+8JnDb7xLQ8UNGeQ81V8AWeuLOvuM9Bf45cY95pIllsOajPZeihSKbwyIGlewonrq
+cT6a1temY3/xz5kvQIXoAnhTcpRpBr+ABrDr7OlJV8auSavkBj3XIBl80qycHY2H
+slwPzX3u45bvhFwUnuUbRuFboLc4XTTRumN/V64iWIor7mkZEXNq1dBrLLdd51o9
+U61DNOIfhMXOnusJDA8sxcIerxyzoFMysJghId6yDg2AUHIIBqCtEWmJMdDlxyBc
+x3cREwqLDkez2+w1+cHazoVRPDhiPkN+28+tVKPZ9p4zKdwLdkQ+YccA0+LHP0VM
+AiN71ObiJB1wwGeUKlMCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgKkMB0GA1UdJQQW
+MBQGCCsGAQUFBwMCBggrBgEFBQcDATAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3
+DQEBCwUAA4IBAQBptuv1zpxDGo4iik+rRgI49TpldkCBLuYnM100ZcudmQKCd4xv
+bFpyZivNd/DgfCg0JgI6O4Ousz97MqjkgY8itdMsmiaPYKbBjwFMOL2Ly38t8PVA
+U0ErF2R+aoTo6NjQJzqt/jCPOgIUGJv73S/9ajl9z0/bOHwQl0qz78OQkaRfg/Wv
+feZW0kLi8+d4EyNIrF57jLuwxpyAwUC5oySkj0IZZYf8qeq6Y7o0i07c9RrpNDl6
+r2jFQm0MsJZB8egFZSEMPwPhdj0zdIdv29YezNli8AuDa+7+u7/i9exncmiHR8r7
+Gn1ytp/St1cV1OGnrVgK1gk0Mz4FRuC9/03v
+-----END CERTIFICATE-----
+
+$ kubectl-minikube -n kube-system describe secret $(kubectl-minikube -n kube-system get secret | grep gitlab | awk '{print $1}')
+Name:         gitlab-token-w9n9b
+Namespace:    kube-system
+Labels:       <none>
+Annotations:  kubernetes.io/service-account.name: gitlab
+              kubernetes.io/service-account.uid: d006bf21-4f5a-4931-80e9-45c9aad73a07
+
+Type:  kubernetes.io/service-account-token
+
+Data
+====
+namespace:  11 bytes
+token:      eyJhbGciOiJSUzI1NiIsImtpZCI6IjdySjlnOE85RmJMN1JXV0VVa1ZzbmdMYWYxQlM4NVZRS2J5Y3l5RDJ1Rm8ifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJnaXRsYWItdG9rZW4tdzluOWIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZ2l0bGFiIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiZDAwNmJmMjEtNGY1YS00OTMxLTgwZTktNDVjOWFhZDczYTA3Iiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmUtc3lzdGVtOmdpdGxhYiJ9.HRCpdHUY0rAfU1fOebj1VZk8IWcyO9XIVOYOcwgXmL2L3-oKFP-al7OKv8WGTBSSkXF3fVg6av2O627t-Qx7olTl1fAeDBvdvKQQG9LgPDMELLQ4sSAi9tw_kcu3BQDz9OHgTs58RmxkWhtxGtUzgP37IpN2KfaoMEgoqpOIre94ssEAvOeNupZ2T2STaHFILg2FBiOq8meQyAsu9pU76-Tuny9jye2uYoAWDVFG5GvDCkAQnK6jm1uhnI3Go9E-2MT_DYGpWhfaweQ9TNS6B4aVguEB-FbTzfYwkJDWwFGuO-UWV24SOGGBtOmLIbVAeWIz04qNExqHZZbu5OLthQ
+ca.crt:     1066 bytes
+
+### Open https://gitlab.dev.davar.com/ and create k8s-development group for example, and integrate group k8s minikube cluster providing above: API URL (https://192.168.99.102:8443), CA Certificate and Service Token. Install Helm, GitLab Runner, etc.
+
+
+
+```
+
 #### Note3: You can install GitLab HELM chart on minikube DEV environment (minikube+gitlab for k8s development):
 
 Howtos:

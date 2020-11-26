@@ -276,10 +276,22 @@ deployment.apps/coredns configured
 service/kube-dns unchanged
 ```
 
-## Install Cert Manager / Selfsigned/ (Note: Let's Encrypt:PRODUCTION when we have internet accessble IPs and public DNS names for davar.com) 
+## Install Cert Manager / Self-Signed Certificates
 
+Note: Let's Encrypt will be used with Cert Manager for PRODUCTION/PUBLIC when we have internet accessble public IPs and public DNS domain. davar.com is local domain, so we use Self-Signed Certificates, Let's Encrypt is using public DNS names and if you try to use Let's Encrypt for local domain and IPs you will have issue:
+```
+$ kubectl describe certificates gitlab-davar -n gitlab
+...
+  Normal   Requested  55s   cert-manager  Created new CertificateRequest resource "gitlab-davar-4v5mt"
+...
+$ kubectl describe certificaterequest gitlab-davar-4v5mt -n gitlab
+...
+$ kubectl describe challenges gitlab-davar-4v5mt -n gitlab
+...
+Warning  Failed     9m59s  cert-manager  Accepting challenge authorization failed: acme: authorization error for reg.gitlab.dev.davar.com: 400 urn:ietf:params:acme:error:dns: DNS problem: NXDOMAIN looking up A for reg.gitlab.dev.davar.com - check that a DNS record exists for this domain
+```
 Gitlab ships with Let's Encrypt capabilities, however, since we are running Gitlab through k3s (Kubernetes) Ingress (using Traefik) we need to generate Certs and provide TLS from the cluster. 
-
+```
 
 Install Cert Manager 
 

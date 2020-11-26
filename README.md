@@ -709,15 +709,14 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 
 Gitlab ships with [Let's Encrypt] capabilities, however, since we are running Gitlab through k3s (Kubernetes) Ingress (using Traefik) we need to generate Certs and provide TLS from the cluster. 
 
-Create Cert Manager's Custom Resource Definitions: 
-```bash
-kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.8/deploy/manifests/00-crds.yaml
-```
-
-Install Cert Manager with the [./k8s/0000-global/001-cert-manager-helm.yml](./k8s/0000-global/001-cert-manager-helm.yml) manifest (the k3s way):
+Install Cert Manager 
 
 ```bash
-kubectl create -f ./k8s/0000-global/001-cert-manager-helm.yml 
+# Kubernetes 1.16+
+$ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.yaml
+
+# Kubernetes <1.16
+$ kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager-legacy.yaml
 ```
 
 Ensure that cert manager is now running:

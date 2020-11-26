@@ -276,19 +276,19 @@ deployment.apps/coredns configured
 service/kube-dns unchanged
 ```
 
-## Install Cert Manager / Let's Encrypt
+## Install Cert Manager / Selfsigned/ (Note: Let's Encrypt:PRODUCTION when we have internet accessble IPs and public DNS names for davar.com) 
 
 Gitlab ships with Let's Encrypt capabilities, however, since we are running Gitlab through k3s (Kubernetes) Ingress (using Traefik) we need to generate Certs and provide TLS from the cluster. 
 
-Create Cert Manager's Custom Resource Definitions: 
-```bash
-kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.8/deploy/manifests/00-crds.yaml
-```
 
-Install Cert Manager with the [./k8s/0000-global/001-cert-manager-helm.yml](./k8s/0000-global/001-cert-manager-helm.yml) manifest (the k3s way):
+Install Cert Manager 
 
 ```bash
-kubectl create -f ./k8s/0000-global/001-cert-manager-helm.yml 
+# Kubernetes 1.16+
+$ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.yaml
+
+# Kubernetes <1.16
+$ kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager-legacy.yaml
 ```
 
 Ensure that cert manager is now running:
@@ -299,40 +299,40 @@ kubectl get all -n cert-manager
 Output:
 ```plain
 $ kubectl get all -n cert-manager
-NAME                                           READY   STATUS    RESTARTS   AGE
-pod/cert-manager-6d87886d5c-2q4rl              1/1     Running   2          31h
-pod/cert-manager-webhook-6846f844ff-b4xjf      1/1     Running   1          31h
-pod/cert-manager-cainjector-55db655cd8-xmrj4   1/1     Running   0          13s
+NAME                                          READY   STATUS    RESTARTS   AGE
+pod/cert-manager-cainjector-bd5f9c764-z7bh6   1/1     Running   0          13h
+pod/cert-manager-webhook-5f57f59fbc-49jk7     1/1     Running   0          13h
+pod/cert-manager-5597cff495-rrl52             1/1     Running   0          13h
 
-NAME                           TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
-service/cert-manager-webhook   ClusterIP   10.43.118.224   <none>        443/TCP    31h
-service/cert-manager           ClusterIP   10.43.133.245   <none>        9402/TCP   31h
+NAME                           TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+service/cert-manager           ClusterIP   10.43.162.66   <none>        9402/TCP   13h
+service/cert-manager-webhook   ClusterIP   10.43.202.9    <none>        443/TCP    13h
 
 NAME                                      READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/cert-manager              1/1     1            1           31h
-deployment.apps/cert-manager-webhook      1/1     1            1           31h
-deployment.apps/cert-manager-cainjector   1/1     1            1           31h
+deployment.apps/cert-manager-cainjector   1/1     1            1           13h
+deployment.apps/cert-manager-webhook      1/1     1            1           13h
+deployment.apps/cert-manager              1/1     1            1           13h
 
-NAME                                                 DESIRED   CURRENT   READY   AGE
-replicaset.apps/cert-manager-6d87886d5c              1         1         1       31h
-replicaset.apps/cert-manager-webhook-6846f844ff      1         1         1       31h
-replicaset.apps/cert-manager-cainjector-55db655cd8   1         1         1       31h
+NAME                                                DESIRED   CURRENT   READY   AGE
+replicaset.apps/cert-manager-cainjector-bd5f9c764   1         1         1       13h
+replicaset.apps/cert-manager-webhook-5f57f59fbc     1         1         1       13h
+replicaset.apps/cert-manager-5597cff495             1         1         1       13h
+
 
 ```
 
 
 Add a ClusterIssuer to handle the generation of Certs cluster-wide:
 
-***NOTE:** First edit [./k8s/0000-global/005-clusterissuer.yml](./k8s/0000-global/005-clusterissuer.yml) and replace **YOUR_EMAIL_ADDRESS** with your email address.
-
 ```bash
-kubectl apply -f ./k8s/0000-global/005-clusterissuer.yml 
+kubectl apply -f ./k8s/0000-global/003-issuer.yml.SELF
+kubectl apply -f ./k8s/0000-global/005-clusterissuer.yml.SELF 
 ```
 ## Install Gitlab
 
-### QUICK INSTALLATION: kubectl create -f 00-namespace.yml ; kubectl create -f 05-certs.yml; kubectl create -f 10-services.yml ; kubectl create -f 20-configmap.yml; kubectl create -f 40-deployment.yml ; kubectl create -f 50-ingress.yml
+### QUICK INSTALLATION: kubectl create -f 00-namespace.yml ; kubectl create -f 05-certs.yml.SELF; kubectl create -f 10-services.yml ; kubectl create -f 20-configmap.yml; kubectl create -f 40-deployment.yml ; kubectl create -f 50-ingress.yml.SELF
 
-### QUICK CLEANING: kubectl delete -f 50-ingress.yml; kubectl delete -f 40-deployment.yml; kubectl delete -f 20-configmap.yml; kubectl delete -f 10-services.yml; kubectl delete -f 05-certs.yml; kubectl delete -f 00-namespace.yml; sudo rm -rf /srv
+### QUICK CLEANING: kubectl delete -f 50-ingress.yml.SELF; kubectl delete -f 40-deployment.yml; kubectl delete -f 20-configmap.yml; kubectl delete -f 10-services.yml; kubectl delete -f 05-certs.yml.SELF; kubectl delete -f 00-namespace.yml; sudo rm -rf /srv
 
 Details bellow:
 
@@ -346,10 +346,10 @@ kubectl apply -f ./k8s/1000-gitlab/00-namespace.yml
 
 ### TLS Certificate
 
-Generate a TLS Certificate (first edit [./k8s/1000-gitlab/05-certs.yml](./k8s/1000-gitlab/05-certs.yml) and replace **gitlab.dev.davar.com** with your domain):
+Generate a TLS Certificate (first edit [./k8s/1000-gitlab/05-certs.yml.SELF](./k8s/1000-gitlab/05-certs.yml.SELF) and replace **gitlab.dev.davar.com** with your domain):
 
 ```bash
-kubectl apply -f ./k8s/1000-gitlab/05-certs.yml
+kubectl apply -f ./k8s/1000-gitlab/05-certs.yml.SELF
 ```
 
 
@@ -431,10 +431,10 @@ prometheus['monitor_kubernetes'] = false
 
 ### Ingress
 
-The Kubernetes [Ingress] manifest [./k8s/1000-gitlab/50-ingress.yml](./k8s/1000-gitlab/50-ingress.yml) sets up Traefik to direct requests to the host IP to backend [Service] named **gitlab**.
+The Kubernetes [Ingress] manifest [./k8s/1000-gitlab/50-ingress.yml.SELF](./k8s/1000-gitlab/50-ingress.yml.SELF) sets up Traefik to direct requests to the host IP to backend [Service] named **gitlab**.
 
 ```bash
-$ kubectl apply -f ./k8s/1000-gitlab/50-ingress.yml
+$ kubectl apply -f ./k8s/1000-gitlab/50-ingress.yml.SELF
 ```
 
 ## Login
@@ -451,69 +451,140 @@ Remember to keep the directory `/srv/gitlab` on the server backed up.
 
 ```
 $ kubectl get all --all-namespaces
-NAMESPACE             NAME                                           READY   STATUS             RESTARTS   AGE
-kube-system           pod/helm-install-traefik-fbmkt                 0/1     Completed          0          30h
-kube-system           pod/helm-install-cert-manager-dzw4f            0/1     Completed          0          29h
-kube-system           pod/svclb-traefik-w9lq6                        2/2     Running            2          30h
-kube-system           pod/metrics-server-7b4f8b595-964g7             1/1     Running            1          30h
-cert-manager          pod/cert-manager-webhook-6846f844ff-b4xjf      1/1     Running            1          29h
-kube-system           pod/traefik-5dd496474-xbdg2                    1/1     Running            1          30h
-kube-system           pod/coredns-66c464876b-lpfv4                   1/1     Running            0          3h42m
-gitlab                pod/gitlab-559c46b888-w4hqt                    1/1     Running            0          90m
-default               pod/busybox                                    1/1     Running            4          4h49m
-default               pod/dnsutils                                   1/1     Running            1          106m
-cert-manager          pod/cert-manager-6d87886d5c-2q4rl              1/1     Running            2          29h
-kube-system           pod/local-path-provisioner-7ff9579c6-88rrd     1/1     Running            3          30h
-cert-manager          pod/cert-manager-cainjector-55db655cd8-hrjhg   0/1     CrashLoopBackOff   6          13m
+NAMESPACE             NAME                                          READY   STATUS      RESTARTS   AGE
+kube-system           pod/helm-install-traefik-fbmkt                0/1     Completed   0          6d4h
+gitlab-managed-apps   pod/install-helm                              0/1     Error       0          4d22h
+gitlab                pod/gitlab-559c46b888-w4hqt                   1/1     Running     10         4d23h
+kube-system           pod/local-path-provisioner-7ff9579c6-88rrd    1/1     Running     18         6d4h
+kube-system           pod/metrics-server-7b4f8b595-964g7            1/1     Running     9          6d4h
+kube-system           pod/svclb-traefik-w9lq6                       2/2     Running     18         6d4h
+kube-system           pod/coredns-66c464876b-lpfv4                  1/1     Running     8          5d1h
+kube-system           pod/traefik-5dd496474-xbdg2                   1/1     Running     9          6d4h
+cert-manager          pod/cert-manager-cainjector-bd5f9c764-z7bh6   1/1     Running     0          13h
+cert-manager          pod/cert-manager-webhook-5f57f59fbc-49jk7     1/1     Running     0          13h
+cert-manager          pod/cert-manager-5597cff495-rrl52             1/1     Running     0          13h
+default               pod/dnsutils                                  1/1     Running     34         4d23h
+default               pod/busybox                                   1/1     Running     37         5d2h
 
 NAMESPACE      NAME                           TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)                      AGE
-default        service/kubernetes             ClusterIP      10.43.0.1       <none>          443/TCP                      30h
-kube-system    service/metrics-server         ClusterIP      10.43.139.93    <none>          443/TCP                      30h
-kube-system    service/traefik-prometheus     ClusterIP      10.43.78.216    <none>          9100/TCP                     30h
-cert-manager   service/cert-manager-webhook   ClusterIP      10.43.118.224   <none>          443/TCP                      29h
-cert-manager   service/cert-manager           ClusterIP      10.43.133.245   <none>          9402/TCP                     29h
-kube-system    service/traefik                LoadBalancer   10.43.100.221   192.168.0.101   80:31768/TCP,443:30058/TCP   30h
-kube-system    service/kube-dns               ClusterIP      10.43.0.10      <none>          53/UDP,53/TCP,9153/TCP       30h
-gitlab         service/gitlab                 ClusterIP      10.43.180.10    <none>          80/TCP,5050/TCP              90m
-gitlab         service/gitlab-ssh             NodePort       10.43.220.213   <none>          32222:32222/TCP              90m
+default        service/kubernetes             ClusterIP      10.43.0.1       <none>          443/TCP                      6d4h
+kube-system    service/metrics-server         ClusterIP      10.43.139.93    <none>          443/TCP                      6d4h
+kube-system    service/traefik-prometheus     ClusterIP      10.43.78.216    <none>          9100/TCP                     6d4h
+kube-system    service/kube-dns               ClusterIP      10.43.0.10      <none>          53/UDP,53/TCP,9153/TCP       6d4h
+gitlab         service/gitlab                 ClusterIP      10.43.180.10    <none>          80/TCP,5050/TCP              4d23h
+gitlab         service/gitlab-ssh             NodePort       10.43.220.213   <none>          32222:32222/TCP              4d23h
+kube-system    service/traefik                LoadBalancer   10.43.100.221   192.168.0.101   80:31768/TCP,443:30058/TCP   6d4h
+cert-manager   service/cert-manager           ClusterIP      10.43.162.66    <none>          9402/TCP                     13h
+cert-manager   service/cert-manager-webhook   ClusterIP      10.43.202.9     <none>          443/TCP                      13h
 
 NAMESPACE     NAME                           DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
-kube-system   daemonset.apps/svclb-traefik   1         1         1       1            1           <none>          30h
+kube-system   daemonset.apps/svclb-traefik   1         1         1       1            1           <none>          6d4h
 
 NAMESPACE      NAME                                      READY   UP-TO-DATE   AVAILABLE   AGE
-kube-system    deployment.apps/metrics-server            1/1     1            1           30h
-cert-manager   deployment.apps/cert-manager-webhook      1/1     1            1           29h
-kube-system    deployment.apps/traefik                   1/1     1            1           30h
-kube-system    deployment.apps/coredns                   1/1     1            1           30h
-gitlab         deployment.apps/gitlab                    1/1     1            1           90m
-cert-manager   deployment.apps/cert-manager              1/1     1            1           29h
-kube-system    deployment.apps/local-path-provisioner    1/1     1            1           30h
-cert-manager   deployment.apps/cert-manager-cainjector   0/1     1            0           29h
+kube-system    deployment.apps/metrics-server            1/1     1            1           6d4h
+kube-system    deployment.apps/coredns                   1/1     1            1           6d4h
+kube-system    deployment.apps/local-path-provisioner    1/1     1            1           6d4h
+gitlab         deployment.apps/gitlab                    1/1     1            1           4d23h
+kube-system    deployment.apps/traefik                   1/1     1            1           6d4h
+cert-manager   deployment.apps/cert-manager-cainjector   1/1     1            1           13h
+cert-manager   deployment.apps/cert-manager-webhook      1/1     1            1           13h
+cert-manager   deployment.apps/cert-manager              1/1     1            1           13h
 
-NAMESPACE      NAME                                                 DESIRED   CURRENT   READY   AGE
-kube-system    replicaset.apps/metrics-server-7b4f8b595             1         1         1       30h
-cert-manager   replicaset.apps/cert-manager-webhook-6846f844ff      1         1         1       29h
-kube-system    replicaset.apps/traefik-5dd496474                    1         1         1       30h
-kube-system    replicaset.apps/coredns-66c464876b                   1         1         1       30h
-gitlab         replicaset.apps/gitlab-559c46b888                    1         1         1       90m
-cert-manager   replicaset.apps/cert-manager-6d87886d5c              1         1         1       29h
-kube-system    replicaset.apps/local-path-provisioner-7ff9579c6     1         1         1       30h
-cert-manager   replicaset.apps/cert-manager-cainjector-55db655cd8   1         1         0       29h
+NAMESPACE      NAME                                                DESIRED   CURRENT   READY   AGE
+kube-system    replicaset.apps/metrics-server-7b4f8b595            1         1         1       6d4h
+kube-system    replicaset.apps/coredns-66c464876b                  1         1         1       6d4h
+kube-system    replicaset.apps/local-path-provisioner-7ff9579c6    1         1         1       6d4h
+gitlab         replicaset.apps/gitlab-559c46b888                   1         1         1       4d23h
+kube-system    replicaset.apps/traefik-5dd496474                   1         1         1       6d4h
+cert-manager   replicaset.apps/cert-manager-cainjector-bd5f9c764   1         1         1       13h
+cert-manager   replicaset.apps/cert-manager-webhook-5f57f59fbc     1         1         1       13h
+cert-manager   replicaset.apps/cert-manager-5597cff495             1         1         1       13h
 
-NAMESPACE     NAME                                  COMPLETIONS   DURATION   AGE
-kube-system   job.batch/helm-install-traefik        1/1           44s        30h
-kube-system   job.batch/helm-install-cert-manager   1/1           10s        29h
+NAMESPACE     NAME                             COMPLETIONS   DURATION   AGE
+kube-system   job.batch/helm-install-traefik   1/1           44s        6d4h
+
 
 $ kubectl get ingress -n gitlab
 Warning: extensions/v1beta1 Ingress is deprecated in v1.14+, unavailable in v1.22+; use networking.k8s.io/v1 Ingress
 NAME        CLASS    HOSTS   ADDRESS         PORTS   AGE
 gitlab-ui   <none>   *       192.168.0.101   80      6m24s
 
-$ kubectl get certificate -n gitlab
-NAME           READY   SECRET             AGE
-gitlab-davar           gitlab-davar-tls   84m
+$ kubectl get ingress -n gitlab
+NAME     CLASS    HOSTS                                           ADDRESS         PORTS     AGE
+gitlab   <none>   gitlab.dev.davar.com,reg.gitlab.dev.davar.com   192.168.0.101   80, 443   51m
 
-$ kubectl describe certificate -n gitlab gitlab-davar
+
+$  kubectl describe certificate -n gitlab gitlab-davar
+Name:         gitlab-davar
+Namespace:    gitlab
+Labels:       <none>
+Annotations:  <none>
+API Version:  cert-manager.io/v1
+Kind:         Certificate
+Metadata:
+  Creation Timestamp:  2020-11-26T09:51:35Z
+  Generation:          1
+  Managed Fields:
+    API Version:  cert-manager.io/v1alpha2
+    Fields Type:  FieldsV1
+    fieldsV1:
+      f:spec:
+        .:
+        f:commonName:
+        f:dnsNames:
+        f:issuerRef:
+          .:
+          f:kind:
+          f:name:
+        f:secretName:
+    Manager:      kubectl-create
+    Operation:    Update
+    Time:         2020-11-26T09:51:35Z
+    API Version:  cert-manager.io/v1
+    Fields Type:  FieldsV1
+    fieldsV1:
+      f:spec:
+        f:privateKey:
+      f:status:
+        f:conditions:
+        f:notAfter:
+        f:notBefore:
+        f:renewalTime:
+        f:revision:
+    Manager:         controller
+    Operation:       Update
+    Time:            2020-11-26T09:51:36Z
+  Resource Version:  165653
+  Self Link:         /apis/cert-manager.io/v1/namespaces/gitlab/certificates/gitlab-davar
+  UID:               4ae40b59-0aac-49b5-9e24-cd9aa2988752
+Spec:
+  Common Name:  gitlab.dev.davar.com
+  Dns Names:
+    gitlab.dev.davar.com
+    reg.gitlab.dev.davar.com
+  Issuer Ref:
+    Kind:       ClusterIssuer
+    Name:       selfsigned-issuer
+  Secret Name:  gitlab-davar-tls
+Status:
+  Conditions:
+    Last Transition Time:  2020-11-26T09:51:36Z
+    Message:               Certificate is up to date and has not expired
+    Reason:                Ready
+    Status:                True
+    Type:                  Ready
+  Not After:               2021-02-24T09:51:36Z
+  Not Before:              2020-11-26T09:51:36Z
+  Renewal Time:            2021-01-25T09:51:36Z
+  Revision:                1
+Events:
+  Type    Reason     Age   From          Message
+  ----    ------     ----  ----          -------
+  Normal  Issuing    52m   cert-manager  Issuing certificate as Secret does not exist
+  Normal  Generated  52m   cert-manager  Stored new private key in temporary Secret resource "gitlab-davar-m48st"
+  Normal  Requested  52m   cert-manager  Created new CertificateRequest resource "gitlab-davar-wzpmk"
+  Normal  Issuing    52m   cert-manager  The certificate has been successfully issued
+
 ```
 
 

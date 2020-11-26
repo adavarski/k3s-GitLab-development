@@ -1287,6 +1287,7 @@ generated on the master node in the previous section, and K3S_URL, the
 master node address, in this case master.c2.example.com. Pipe the k3s
 installer script to sh along with the command-line argument agent (run as
 nonworker) and a network topology label:
+$ export INSTALL_K3S_VERSION=v1.16.10+k3s1
 $ export K3S_CLUSTER_SECRET="<PASTE VALUE>"
 $ export K3S_URL="https://master.example.com:6443"
 $ curl -sfL https://get.k3s.io | \

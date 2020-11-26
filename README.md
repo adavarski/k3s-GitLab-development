@@ -1120,7 +1120,7 @@ $HELM_HOME has been configured at /root/.helm.
 Error: error installing: the server could not find the requested resource
 ```
 
-#### Example: Integrate gitlab+k3s with existing k8s cluster (minikube k8s cluster running locally on your laptop):
+#### Example1: Integrate gitlab+k3s with existing k8s cluster (minikube k8s cluster running locally on your laptop):
 
 ```
 # Install minikube and kubectl the same k8s minor version : v1.16.2 (Note: some GitLab supported k8s version) 
@@ -1196,6 +1196,132 @@ ca.crt:     1066 bytes
 and integrate group k8s minikube cluster providing above: API URL (https://192.168.99.102:8443), CA Certificate and Service Token. 
 Install Helm, GitLab Runner, etc.
 
+```
+#### Example2: Integrate gitlab+k3s with existing k8s cluster (k3s cluster:singel-node running on cloud VM or some bare-metal LAB server):
+
+```
+$ export INSTALL_K3S_VERSION=v1.16.10+k3s1
+$ export K3S_CLUSTER_SECRET=$(head -c48 /dev/urandom | base64)
+# copy the echoed secret
+$ echo $K3S_CLUSTER_SECRET
+Install k3s:
+$ curl -sfL https://get.k3s.io | sh -s – server
+Download the k3s kubectl config file to a local workstation:
+$ scp root@VM_PUBLIC_IP_OR_BARE_METAL_IP:/etc/rancher/k3s/k3s.yaml  
+~/.kube/k8s-c1
+Edit the new config to point the c1 Kubernetes API along with naming
+the cluster and contexts:
+$ sed -i .bk "s/default/k8s-c1/" ~/.kube/k8s-c1
+$ sed -i .bk "s/127.0.0.1/FQDN/" ~/.kube/k8s-c1 
+# Example: sed -i .bk "s/127.0.0.1/sofia1-1.c1.example.com/" ~/.kube/k8s-c1
+Use the new k8s-c1 config to work with the c1 cluster in a new
+terminal on a location workstation:
+$ export KUBECONFIG=~/.kube/k8s-c1
+
+```
+#### Example2: Integrate gitlab+k3s with existing k8s cluster (k3s cluster:multi-node hybrid cluster running on cloud VMs on differen Cloud providers : Hybrid k8s multi-node installation, based on Kilo pod network):
+```
+# DNS setup: Setup DNS to manage the DNS A entries for a new development cluster called c2: *.c2 points to
+the IP addresses assigned to the cloud VM instances used as worker nodes, because we use DNS round-robin but not LoadBalancer for simplicity of DEV k8s environment
+
+# Master Node (Ubuntu)
+Log in to new cloud server instance, and upgrade and install
+required packages along with WireGuard :
+
+$ apt upgrade -y
+$ apt install -y apt-transport-https \
+ca-certificates gnupg-agent \
+software-properties-common
+$ add-apt-repository -y ppa:wireguard/wireguard
+$ apt update
+$ apt -o Dpkg::Options::=--force-confnew \
+install -y wireguard
+
+$ export INSTALL_K3S_VERSION=v1.16.10+k3s1
+$ export K3S_CLUSTER_SECRET=$(head -c48 /dev/urandom | base64)
+# copy the echoed secret
+$ echo $K3S_CLUSTER_SECRET
+Install k3s without the default Flannel Pod network; Kilo, installed later
+in this chapter, will handle the layer-3 networking:
+$ curl -sfL https://get.k3s.io | \
+sh -s - server --no-flannel
+# Taint the master
+node to prevent the scheduling of regular workloads:
+$ kubectl taint node master dedicated=master:NoSchedule
+# Kilo creates VPN tunnels between regions using the name label topology.kubernetes.io/region; label the master node with its region,
+in this example, nyc3:
+$ kubectl label node master \
+topology.kubernetes.io/region=nyc3
+# Copy the k3s kubectl configuration file located at /etc/rancher/k3s/k3s.yaml to root home:
+$ cp /etc/rancher/k3s/k3s.yaml ~
+# Create a DNS entry for the master node, in this case, master.c2.
+example.com, and update the copied ~/k3s.yml file with the new public
+DNS. 
+$ sed -i "s/127.0.0.1/master.c2.example.com/" k3s.yaml
+$ sed -i "s/default/k8s-c2/" k3s.yaml
+# copy the modified k3s.yaml onto a local workstation with
+kubectl installed. From a local workstation, use secure copy:
+$ scp root@master.c2.example.com:~/k3s.yaml ~/.kube/k8s-c2
+Use the new kubectl configuration file to query the master node:
+$ export KUBECONFIG=~/.kube/k8s-c2
+$ kubectl describe node master
+
+#Worker Nodes
+# Log in to each new cloud server instance, and upgrade and install
+required packages along with WireGuard on each instance:
+$ apt upgrade -y
+$ apt install -y apt-transport-https \
+ca-certificates gnupg-agent \
+software-properties-common
+# Install kernel headers (if missing on instances)
+$ apt install -y linux-headers-$(uname -r)
+# Ceph block device kernel module (for Ceph support)
+$ modprobe rbd
+$ add-apt-repository -y ppa:wireguard/wireguard
+$ apt update
+$ apt -o Dpkg::Options::=--force-confnew \
+install -y wireguard
+# install k3s on each new Hetzner instance. Begin by populating
+the environment variables K3S_CLUSTER_SECRET, the cluster secret
+generated on the master node in the previous section, and K3S_URL, the
+master node address, in this case master.c2.example.com. Pipe the k3s
+installer script to sh along with the command-line argument agent (run as
+nonworker) and a network topology label:
+$ export K3S_CLUSTER_SECRET="<PASTE VALUE>"
+$ export K3S_URL="https://master.example.com:6443"
+$ curl -sfL https://get.k3s.io | \
+sh -s - agent --no-flannel \
+--node-label=\"topology.kubernetes.io/region=nbg1\"
+# The c2.example.com cluster now consists of four nodes, one master
+node and three worker nodes at different cloud providers. On a local
+workstation with the kubectl configuration file copy and modified list the four nodes:
+$ export KUBECONFIG=~/.kube/k8s-c2
+$ kubectl get nodes -o wide
+# kubectl lists four nodes in the cluster. The cluster lacks a Pod network
+and will therefore report a NotReady status for each node.
+# Node Roles setup 
+$ kubectl label node nbg1-n1 kubernetes.io/role=worker
+$ kubectl label node nbg1-n2 kubernetes.io/role=worker
+$ kubectl label node nbg1-n3 kubernetes.io/role=worker
+# Install Kilo 
+# Kilo requires access to the kubectl config for each node in the
+cluster to communicate with the master node. The kilo-k3s.yaml applied
+requires the kubectl config /etc/rancher/k3s/k3s.yaml on each node. The
+master node k3s install generated the file /etc/rancher/k3s/k3s.yaml.
+Download, modify, and distribute this file to the same path on all worker
+nodes (it does not need modification on the master node):
+$ ssh root@master.c2.example.com \
+sed "s/127.0.0.1/master.c2.example.com/" \ /etc/rancher/k3s/k3s.
+yaml >k3s.yaml
+Copy the modified k3s.yaml to /etc/rancher/k3s/k3s.yaml on each
+node.
+Finally, install Kilo by applying the kilo-k3s.yaml configuration
+manifest:
+$ kubectl apply -f \
+https://raw.githubusercontent.com/squat/kilo/master/manifests/
+kilo-k3s.yaml
+# A Kilo agent is now running on each node. Once Kilo has completed the VPN setup, each node reports as Ready, and
+the new c2 hybrid cluster is ready for use.
 ```
 
 #### Note3: You can install GitLab HELM chart on minikube DEV environment (minikube+gitlab for k8s development):

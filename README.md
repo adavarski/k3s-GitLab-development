@@ -1219,7 +1219,11 @@ terminal on a location workstation:
 $ export KUBECONFIG=~/.kube/k8s-c1
 
 ```
-#### Example2: Integrate gitlab+k3s with existing k8s cluster (k3s cluster:multi-node hybrid cluster running on cloud VMs on differen Cloud providers : Hybrid k8s multi-node installation, based on Kilo pod network):
+#### Example3: Integrate gitlab+k3s with existing k3s Hybrid Cloud 
+
+k3s multi-node Hybrid cluster running on cloud VMs on differen Cloud providers (different regions), based on Kilo pod network). 
+Example bellow use Hybrid k3s multi-node installation: master on Cloud Provider 1 (Digital Ocean for example) and Workers on different Cloud Provider2 (Linode for example), all running in the same Cloud Provider Region:
+
 ```
 # DNS setup: Setup DNS to manage the DNS A entries for a new development cluster called c2: *.c2 points to
 the IP addresses assigned to the cloud VM instances used as worker nodes, because we use DNS round-robin but not LoadBalancer for simplicity of DEV k8s environment

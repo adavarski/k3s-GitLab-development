@@ -11,8 +11,6 @@ This document outlines the steps for utilizing [k3s](https://k3s.io/) to manage 
 
 <img src="https://raw.githubusercontent.com/adavarski/k3s-gitlab-development/main/pictures/DevOps_Toolchain.png?raw=true" width="800">
 
-
-
 Containers have made applications like Gitlab incredibly portable, Kubernetes brings that portability to container management and [k3s] makes that portability available at the smallest of scale.
 
 This document outlines a process for setting up a Gitlab instance in a single custom node Kubernetes (k3s) cluster on [localhost] for local development or on VM [Digital Ocean], [Linode], [Google GCP], [Amazon AWS], [Microsoft Azure], etc.

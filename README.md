@@ -272,6 +272,36 @@ clusterrolebinding.rbac.authorization.k8s.io/system:coredns unchanged
 configmap/coredns unchanged
 deployment.apps/coredns configured
 service/kube-dns unchanged
+
+# Test k8s CoreDNS (for davar.com)
+
+$ cat dnsutils.yaml 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dnsutils
+  namespace: default
+spec:
+  containers:
+  - name: dnsutils
+    image: gcr.io/kubernetes-e2e-test-images/dnsutils:1.3
+    command:
+      - sleep
+      - "3600"
+    imagePullPolicy: IfNotPresent
+  restartPolicy: Always
+
+$ kubectl apply -f dnsutils.yaml
+
+$ kubectl get po dnsutils
+NAME       READY   STATUS    RESTARTS   AGE
+dnsutils   1/1     Running   1          22m
+
+$ kubectl exec -i -t dnsutils -- sh
+/ # host gitlab.dev.davar.com
+gitlab.dev.davar.com has address 192.168.0.101
+
+
 ```
 
 ## Install Cert Manager / Self-Signed Certificates

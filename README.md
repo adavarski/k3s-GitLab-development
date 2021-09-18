@@ -1386,7 +1386,7 @@ New concepts like GitOps aim to completely manage the active configuration state
 [Digital Ocean]:https://m.do.co/c/97b733e7eba4
 [Linode]:https://www.linode.com/?r=848a6b0b21dc8edd33124f05ec8f99207ccddfde
 [Kubernetes]:https://kubernetes.io/
-
+```
 
 
 

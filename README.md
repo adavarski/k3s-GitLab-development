@@ -1371,7 +1371,7 @@ New concepts like GitOps aim to completely manage the active configuration state
 
 
 ### References:
-```
+
 [Pod]: https://kubernetes.io/docs/concepts/workloads/pods/pod/
 [Deployment]: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
 [Ingress]: https://kubernetes.io/docs/concepts/services-networking/ingress/
@@ -1387,7 +1387,7 @@ New concepts like GitOps aim to completely manage the active configuration state
 [Digital Ocean]: https://m.do.co/c/97b733e7eba4
 [Linode]: https://www.linode.com/?r=848a6b0b21dc8edd33124f05ec8f99207ccddfde
 [Kubernetes]: https://kubernetes.io/
-```
+
 
 
 

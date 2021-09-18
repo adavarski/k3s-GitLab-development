@@ -1371,21 +1371,21 @@ New concepts like GitOps aim to completely manage the active configuration state
 
 
 ### References
-[Pod]: https://kubernetes.io/docs/concepts/workloads/pods/pod/
-[Deployment]: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
-[Ingress]: https://kubernetes.io/docs/concepts/services-networking/ingress/
-[Namespace]: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
-[Service]: https://kubernetes.io/docs/concepts/services-networking/service/
-[Let's Encrypt]: https://letsencrypt.org/
-[ClusterIssuer]: https://docs.cert-manager.io/en/latest/tasks/issuers/
+[Pod]:https://kubernetes.io/docs/concepts/workloads/pods/pod/
+[Deployment]:https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+[Ingress]:https://kubernetes.io/docs/concepts/services-networking/ingress/
+[Namespace]:https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+[Service]:https://kubernetes.io/docs/concepts/services-networking/service/
+[Let's Encrypt]:https://letsencrypt.org/
+[ClusterIssuer]:https://docs.cert-manager.io/en/latest/tasks/issuers/
 [Traefik]:https://traefik.io/
-[contexts]: https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/
-[kubectl]: https://kubernetes.io/docs/tasks/tools/install-kubectl/
-[k3s]: https://k3s.io/
-[Gitlab]: https://about.gitlab.com/
-[Digital Ocean]: https://m.do.co/c/97b733e7eba4
-[Linode]: https://www.linode.com/?r=848a6b0b21dc8edd33124f05ec8f99207ccddfde
-[Kubernetes]: https://kubernetes.io/
+[contexts]:https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/
+[kubectl]:https://kubernetes.io/docs/tasks/tools/install-kubectl/
+[k3s]:https://k3s.io/
+[Gitlab]:https://about.gitlab.com/
+[Digital Ocean]:https://m.do.co/c/97b733e7eba4
+[Linode]:https://www.linode.com/?r=848a6b0b21dc8edd33124f05ec8f99207ccddfde
+[Kubernetes]:https://kubernetes.io/
 
 
 

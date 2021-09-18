@@ -1369,8 +1369,8 @@ https://docs.gitlab.com/charts/development/minikube/index.html
 
 New concepts like GitOps aim to completely manage the active configuration state directly with Git. GitOps, a process popularized by Weaveworks, is another trending concept within the scope of Kubernetes CI/CD. GitOps involves the use of applications reacting to git push events. GitOps focuses primarily on Kubernetes clusters matching the state described by configuration (www.weave.works/technologies/gitops/ ; www.gitops.tech/) residing in a Git repository. On a simplistic level, GitOps aims to replace kubectl apply with git push. Popular and well-supported GitOps implementations include ArgoCD, Flux, and Jenkins X, GitLAb. GitLab k8s integration supports GitOps.
 
-
-### References
+### References:
+        
 [Pod]:https://kubernetes.io/docs/concepts/workloads/pods/pod/
 [Deployment]:https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
 [Ingress]:https://kubernetes.io/docs/concepts/services-networking/ingress/

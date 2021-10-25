@@ -1247,6 +1247,28 @@ terminal on a location workstation:
 $ export KUBECONFIG=~/.kube/k8s-c1
 
 ```
+Note: For new k3s versions (k8s > 1.20)
+```
+$ ssh davar@192.168.1.22 -o IdentitiesOnly=yes
+# hostnamectl set-hostname kmaster1
+# curl -sfL https://get.k3s.io | sh -
+
+Get K3S_TOKEN (stored at /var/lib/rancher/k3s/server/node-token on your k8s master server node).
+
+To install on worker nodes and add them to the cluster, run the installation script with the K3S_URL and K3S_TOKEN environment variables. Here is an example showing how to join a worker node
+
+Note: Each machine must have a unique hostname.
+
+$ ssh davar@192.168.1.20 -o IdentitiesOnly=yes
+# hostnamectl set-hostname kworker0
+# curl -sfL https://get.k3s.io | K3S_URL=https://192.168.1.22:6443 K3S_TOKEN="K10073946490225175ee91bc5b1a042bf90c0a64e20cc250c6e47c1b8dbaf4ba4f9::server:eb7864f8e04971d7be27299f340fdeaf" sh -
+
+$ ssh davar@192.168.1.21 -o IdentitiesOnly=yes
+# hostnamectl set-hostname kworker1
+# curl -sfL https://get.k3s.io | K3S_URL=https://192.168.1.22:6443 K3S_TOKEN="K10073946490225175ee91bc5b1a042bf90c0a64e20cc250c6e47c1b8dbaf4ba4f9::server:eb7864f8e04971d7be27299f340fdeaf" sh -
+
+```        
+        
 #### Example3: Integrate gitlab+k3s with existing k3s Hybrid Cloud 
 
 k3s multi-node Hybrid cluster running on cloud VMs on differen Cloud providers (different regions), based on Kilo pod network. 
